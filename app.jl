@@ -2,7 +2,7 @@ using Oxygen
 using HTTP
 using Mustache
 
-function render_html(htmlFile::String, cssFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
+function renderHTML(htmlFile::String, cssFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
     isContextEmpty = isempty(context)
 
     # Read HTML file
@@ -27,7 +27,7 @@ function render_html(htmlFile::String, cssFile::String, context::Dict = Dict(); 
 end
 
 
-function generate_password(length::Int)
+function generatePassword(length::Int)
     # Generate a random password of the specified length
     password = ""
 
@@ -44,11 +44,11 @@ end
     form_data = queryparams(req)
     phrase = get(form_data, "phrase", "")
     password_length = get(form_data, "password_length", "0")
-    password = generate_password(parse(Int, password_length))
+    password = generatePassword(parse(Int, password_length))
     results = join([phrase, password], "")
     context = Dict("phrase" => phrase, "results" => results)
 
-    return render_html("index.html", "pico.css", context)
+    return renderHTML("index.html", "pico.css", context)
 end
 
 serve(port=8001)
