@@ -2,26 +2,6 @@ using Oxygen
 using HTTP
 using Mustache
 
-# function render_html(htmlFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
-#     isContextEmpty = isempty(context) === true
-
-#     # Return raw HTML without context
-#     if isContextEmpty
-#         io = open(htmlFile, "r") do file
-#             read(file, String)
-#         end
-#         template = io |> String
-
-#     # Return HTML with context
-#     else
-#         io = open(htmlFile, "r") do file
-#             read(file, String)
-#         end
-#         template = String(Mustache.render(io, context))
-#     end
-#         return HTTP.Response(status, headers, body = template)
-# end
-
 function render_html(htmlFile::String, cssFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
     isContextEmpty = isempty(context)
 
