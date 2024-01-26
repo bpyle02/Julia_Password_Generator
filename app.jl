@@ -2,25 +2,50 @@ using Oxygen
 using HTTP
 using Mustache
 
-function render_html(htmlFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
-    isContextEmpty = isempty(context) === true
+# function render_html(htmlFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
+#     isContextEmpty = isempty(context) === true
 
-    # Return raw HTML without context
-    if isContextEmpty
-        io = open(htmlFile, "r") do file
-            read(file, String)
-        end
-        template = io |> String
+#     # Return raw HTML without context
+#     if isContextEmpty
+#         io = open(htmlFile, "r") do file
+#             read(file, String)
+#         end
+#         template = io |> String
 
-    # Return HTML with context
-    else
-        io = open(htmlFile, "r") do file
-            read(file, String)
-        end
-        template = String(Mustache.render(io, context))
+#     # Return HTML with context
+#     else
+#         io = open(htmlFile, "r") do file
+#             read(file, String)
+#         end
+#         template = String(Mustache.render(io, context))
+#     end
+#         return HTTP.Response(status, headers, body = template)
+# end
+
+function render_html(htmlFile::String, cssFile::String, context::Dict = Dict(); status = 200, headers = ["Content-Type" => "text/html; charset=utf-8"]) :: HTTP.Response
+    isContextEmpty = isempty(context)
+
+    # Read HTML file
+    io = open(htmlFile, "r") do file
+        read(file, String)
     end
-        return HTTP.Response(status, headers, body = template)
+    template = isContextEmpty ? io |> String : String(Mustache.render(io, context))
+
+    # Read CSS file
+    css = ""
+    if !isempty(cssFile)
+        css_io = open(cssFile, "r") do file
+            read(file, String)
+        end
+        css = "<style>$css_io</style>"
+    end
+
+    # Combine HTML and CSS
+    template = "<html><head>$css</head><body>$template</body></html>"
+
+    return HTTP.Response(status, headers, body = template)
 end
+
 
 function generate_password(length::Int)
     # Generate a random password of the specified length
@@ -36,10 +61,6 @@ function generate_password(length::Int)
 end
 
 @get "/" function(req::HTTP.Request)
-    return "Hello Julia Web App"
-end
-
-@get "/generate" function(req::HTTP.Request)
     form_data = queryparams(req)
     phrase = get(form_data, "phrase", "")
     password_length = get(form_data, "password_length", "0")
@@ -47,7 +68,7 @@ end
     results = join([phrase, password], "")
     context = Dict("phrase" => phrase, "results" => results)
 
-    return render_html("generate_password.html", context)
+    return render_html("index.html", "pico.css", context)
 end
 
 serve(port=8001)

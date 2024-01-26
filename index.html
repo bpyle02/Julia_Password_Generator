@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="pico.css">
+        <link rel="stylesheet" type="text/css" href="/pico.css">
         <title>Password Generator</title>
     </head>
     <body>
@@ -11,8 +11,8 @@
             <section>
                 <article>
                     <form action="" method="GET">
-                        <input type="text" name="phrase" id="" />
-                        <input type="number" name="password_length" id=""/>
+                        <input type="text" name="phrase" value="Input a custom phrase" id="" />
+                        <input type="number" name="password_length" value="0" id=""/>
                         <button type="submit">Generate</button>
                     </form>
                 </article>
@@ -22,9 +22,9 @@
 
             <section>
                 <article>
-                    <h2>Your phrase was {{phrase}}</h2>
+                    <h2>Your phrase was "{{phrase}}"</h2>
                     <hr>
-                    <p>{{results}}</p>
+                    <p>Your password is: {{results}}</p>
                 </article>
             </section>
 
